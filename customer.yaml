@@ -1,0 +1,50 @@
+apiVersion: v1
+kind: Service
+metadata:
+  labels:
+    app: customer
+    apic-managed: "true"
+  creationTimestamp: null
+  name: customer
+  namespace: apic-demo
+spec:
+  ports:
+  - port: 8080
+    protocol: TCP
+    targetPort: http
+    name: http
+  selector:
+    run: customer
+status:
+  loadBalancer: {}
+---
+apiVersion: apps/v1beta1
+kind: Deployment
+metadata:
+  creationTimestamp: null
+  labels:
+    run: customer
+  name: customer
+  namespace: apic-demo
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      run: customer
+  strategy: {}
+  template:
+    metadata:
+      creationTimestamp: null
+      labels:
+        app: customer
+        run: customer
+    spec:
+      containers:
+      - image: lauraheritage/customer
+        imagePullPolicy: Always
+        name: customer
+        ports:
+        - containerPort: 8080
+          name: http
+        resources: {}
+status: {}
